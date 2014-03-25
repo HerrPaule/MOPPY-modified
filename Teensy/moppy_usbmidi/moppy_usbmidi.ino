@@ -1,3 +1,11 @@
+/*
+this sketch is based on SammyIAm Moppy Sketch.
+I only make some additional modification to use the the original Moopy sketch with Teensy usbmidi functions.
+
+the original sketch & SammyIAm Source can be found at: https://github.com/SammyIAm/Moppy
+*/
+
+
 #include <TimerOne.h>
 
 boolean firstRun = true; // Used for one-run-only stuffs;
