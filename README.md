@@ -15,3 +15,5 @@ Max/MSP & Pure Data
 ==============
 Use the orginal Arduino Sketch with Max/MSP or Pure Data. No further modification are necessary. Max/MSP or Pure Data will send the same byte commands as SammyIAm's MOPPYDESK. You don't have to install the JAVA RXTX drivers.
 Check the PDF for details of the send byte command.
+
+The Pure Data version works with Raspberry Pi & PD-extended. 
