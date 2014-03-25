@@ -8,7 +8,7 @@ SammyIAm source: https://github.com/SammyIAm/Moppy
 Teensy (2.0++) usbmidi
 ==============
 Use usbmidi to control the floppydrives. I tested it with Teensy 2.0++, 16 Floppydrives & 16 MIDI Channels.
-Maybe you can use the HIDUINO FW to run your Arduino Board with MIDI over USB. Change the "usbmidi" commands to "midi" (watch MIDI Library). I haven't tested it right now. 
+Maybe you can use the HIDUINO FW (https://github.com/ddiakopoulos/hiduino) to run your Arduino Board with MIDI over USB. Change the "usbmidi" commands to "midi" (watch MIDI Library). I haven't tested it right now. 
 
 1. Download & install Teensyduino Add-On for Arduino IDE: https://www.pjrc.com/teensy/td_download.html
 2. Open Arduino IDE, go to Tools -> Boards and select your Teensy Board and select at "USB Type" MIDI.
