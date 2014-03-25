@@ -84,7 +84,7 @@ void setup(){
   pinMode(31, OUTPUT); // Direction 15
   pinMode(32, OUTPUT); // Step control 16
   pinMode(33, OUTPUT); // Direction 16
-*/
+
   Timer1.initialize(RESOLUTION); // Set up a timer at the defined resolution
   Timer1.attachInterrupt(tick); // Attach the tick function
 
