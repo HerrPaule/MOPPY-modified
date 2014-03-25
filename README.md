@@ -31,5 +31,6 @@ The Pure Data version works with Raspberry Pi & PD-extended.
 3. Open the Max/MSP or Pure Data file.
 4. Select the MIDI In Port.
 5. Setup the Arduino serial port:
+
 - At Max/MSP press "print" messagesbox to get the Arduino serial port. The availble ports will be print at Max Window. Edit the [serial] object the with letter of your Arduino port or select the port by a messagebox with "port Yourportletter" and connect it to the [serial] object.
 - At Pure Data press "ports" and check PD Window. Edit the Portnumber of the [serial] object or created a messagebox with "open Yourportnumber" and connect it to [serial]
