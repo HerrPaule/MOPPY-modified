@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="author" content="Herr Paule">
+    <meta name="description" content="more at http://irieelectronics.de">
+    <title>MOPPY WEBC</title>
+
+    <link rel="stylesheet" href="http://code.jquery.com/ui/1.10.4/themes/smoothness/jquery-ui.css">
+
+    <style>
+    body{
+    padding: 0;
+    margin: 50px 0px;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-weight: 300;
+    text-rendering: optimizelegibility;
+    div.demo{text-align: center; width: 280px; float: left}
+	div.demo > p{font-size: 20px}
+        }
+        
+    .box-round-corners {
+	-moz-border-radius-topleft: 8px;
+	-moz-border-radius-topright: 8px;
+	-moz-border-radius-bottomright: 8px;
+	-moz-border-radius-bottomleft: 8px;
+	-webkit-border-top-left-radius: 8px;
+	-webkit-border-top-right-radius: 8px;
+	-webkit-border-bottom-left-radius: 8px;
+	-webkit-border-bottom-right-radius: 8px;
+	}
+    </style>
+</head>
+<body>
+<div class="box-round-corners" style="position:relative; background: #333; width: 500px; height: 450px; margin-top: 70px; margin: auto">
+  <div style="text-align: center; margin-top: 50px">
+  	<div class="icheck-box-holder">	
+  	<br>
+  		<div class="icheck-input-holder">
+  			<input type="checkbox" class="modi" name="modi" id="modi1" value="1">
+  			<label>PLAY</label>
+ 		</div>
+  		<div class="icheck-input-holder">
+  			<input type="checkbox" class="modi" name="modi" id="modi2" value="2">
+  			<label>LOOP</label>
+  		</div>
+  		<div class="icheck-input-holder">
+  			<input type="checkbox" class="modi" name="modi" id="modi3" value="3">
+  			<label>REWIND</label>
+  		</div>
+  	</div>
+  </div>
+
+  <div style="position:relative;width: 300px;margin:auto">
+  	<div style="position:absolute;left:50px;top:70px">
+  		<input class="knob time">
+  	</div>
+  	<div style="position:absolute;left:60px;top:80px">
+  		<input class="knob bpm" value="1">
+  	</div>
+  </div>
+  
+  <div style="position: relative; text-align: center; margin-top: 340px">
+  	<div class="icheck-box-holder">	
+  	<br>
+  		<div class="icheck-input-holder">
+  			<input type="radio" class="midiauswahl" name="midiauswahl" id="midifile[1]" value="1">
+  			<label>MIDI 1</label>
+  		</div>
+  		<div class="icheck-input-holder">
+  			<input type="radio" class="midiauswahl" name="midiauswahl" id="midifile[2]" value="2">
+  			<label>MIDI 2</label>
+  		</div>
+  		<div class="icheck-input-holder">
+  			<input type="radio" class="midiauswahl" name="midiauswahl" id="midifile[3]" value="3">
+  			<label>MIDI 3</label>
+  		</div>
+	</div>
+  </div> 
+  </br>
+</div>
+<script src="http://code.jquery.com/jquery-1.9.1.js"></script>
+<script src="http://code.jquery.com/ui/1.10.4/jquery-ui.js"></script>
+<script src="js/jquery.knob.js"></script>
+<script src="js/jquery.icheck.min.js"></script><link href="js/all.css" rel="stylesheet">
+
+
+
+<script>
+$(function() {
+    var socket = new WebSocket("ws://192.168.1.11:9998"); //change the IP Adress to Raspberry Pi's IP
+    socket.onmessage=function(event){
+    				var errorm = event.data;
+                    var data = event.data.replace('/', '').split(' ');
+                    var cmd = data[0];
+                    var valu = data[1];
+                    if (cmd == "sliderval") {
+                        $('#slider').slider("value", valu);
+                    } else if (cmd == "bpm") {
+                    var $b = $('.bpm');
+                        $b.val (valu).trigger('change');
+                    }
+                    else if (cmd == "timestate") {
+                    var $s = $('.time');
+                     $s.val (valu).trigger('change');
+                    }
+                    else if (cmd == "timemax") {
+                    var $s = $('.time');
+                    var i = valu;
+                    $s.trigger('configure',
+                    	{
+                    	"max": (i)
+                    	});
+                    }
+                    else{
+                    alert("No match for '" + errorm + "'");
+                    }
+                 };
+
+	//icheck checkbox
+	var icheck_input_type = 'icheckbox'; 
+	var icheck_input_color = '-grey'; 
+	var icheck_background_color = 'color:inherit;background:inherit'; 
+			
+	$('.modi').each(function(){
+				var self = $(this);
+				var label = self.next();
+				var label_text = label.text();
+				label.remove();
+				self.iCheck({
+					checkboxClass:icheck_input_type+'_line'+icheck_input_color,
+					radioClass:icheck_input_type+'_line'+icheck_input_color,
+					insert: '<div class="icheck_line-icon"></div>'+label_text,
+					increaseArea: '20%' 
+				});
+			});
+
+	$('input[name="modi"]').on('ifChanged', function(e){
+			 var modis = ( $(this).val() );
+			 socket.send("/modus " + modis);
+			 console.log("/modus " + modis);
+			});
+			
+	//icheck radiobutton
+	var icheck_input_type = 'iradio'; 
+	var icheck_input_color = '-grey'; 
+	var icheck_background_color = 'color:inherit;background:inherit'; 
+					
+	$('.midiauswahl').each(function(){
+			var self = $(this);
+			var label = self.next();
+			var label_text = label.text();
+			label.remove();
+			self.iCheck({
+				checkboxClass:icheck_input_type+'_line'+icheck_input_color,
+				radioClass:icheck_input_type+'_line'+icheck_input_color,
+				insert: '<div class="icheck_line-icon"></div>'+label_text,
+				increaseArea: '20%' 
+			});
+		});
+		
+	$('input[name="midiauswahl"]').on('ifChecked', function(e){
+			 var track = $("input:radio:checked[name='midiauswahl']").val();
+			 socket.send("/midifile " + track);
+        	 console.log("/midifile " + track);
+			});
+
+	var icheck_style = '<style>.icheck-input-holder{width:100px; height:30px; font-family:"Helvetica Neue", Helvetica, Arial, sans-serif; display:inline-block; text-align:center;}</style>';
+	$('html > head').append(icheck_style);
+	icheck_style='<style>.icheck-box-holder{'+icheck_background_color+'}</style>';
+	$('html > head').append(icheck_style);
+	icheck_style='<style>.icheckbox_minimal, .icheckbox_minimal-red, .icheckbox_minimal-green, .icheckbox_minimal-blue, .icheckbox_minimal-aero, .icheckbox_minimal-grey, .icheckbox_minimal-orange, .icheckbox_minimal-yellow, .icheckbox_minimal-pink, .icheckbox_minimal-purple, .iradio_minimal, .iradio_minimal-red, .iradio_minimal-green, .iradio_minimal-blue, .iradio_minimal-aero, .iradio_minimal-grey, .iradio_minimal-orange, .iradio_minimal-yellow, .iradio_minimal-pink, .iradio_minimal-purple,.icheckbox_square, .icheckbox_square-red, .icheckbox_square-green, .icheckbox_square-blue, .icheckbox_square-aero, .icheckbox_square-grey, .icheckbox_square-orange, .icheckbox_square-yellow, .icheckbox_square-pink, .icheckbox_square-purple, .iradio_square, .iradio_square-red, .iradio_square-green, .iradio_square-blue, .iradio_square-aero, .iradio_square-grey, .iradio_square-orange, .iradio_square-yellow, .iradio_square-pink, .iradio_square-purple,.icheckbox_flat, .icheckbox_flat-red, .icheckbox_flat-green, .icheckbox_flat-blue, .icheckbox_flat-aero, .icheckbox_flat-grey, .icheckbox_flat-orange, .icheckbox_flat-yellow, .icheckbox_flat-pink, .icheckbox_flat-purple, .iradio_flat, .iradio_flat-red, .iradio_flat-green, .iradio_flat-blue, .iradio_flat-aero, .iradio_flat-grey, .iradio_flat-orange, .iradio_flat-yellow, .iradio_flat-pink, .iradio_flat-purple,.icheckbox_polaris, .iradio_polaris,.icheckbox_futurico, .iradio_futurico { position: relative;display:inline-block;top:4px;  }</style>'
+	$('html > head').append(icheck_style);
+
+	$("input.time").knob({
+	'readOnly': true, 
+	'min': 0, 
+	'bgColor': "#333", 
+	'fgColor': "rgba(113, 213, 76, 0.7)", 
+	'displayInput': false, 
+	'width': 220, 
+	'height': 220, 
+	'thickness': .07
+	});
+	
+
+
+	$("input.bpm").knob({
+		'min': 1,
+		'max': 240,
+		'width': 200, 
+		'height': 200,
+		'cursor': 30,
+		'stopper': true,
+		'bgColor': "rgba(255, 255, 255, 0.5)",
+		'fgColor': "#333",
+		'thickness': .45,
+		'inputColor': "#fff",		
+        release : function (v) {
+            socket.send("/rotary " + v);
+            console.log(v);
+        }
+    });
+
+    $(".knob").knob({
+        change : function (value) {
+
+                        //console.log("change : " + value);
+                    },
+        release : function (value) {
+                //console.log("release : " + value);
+                //socket.send("/allrotary " + value);
+            },
+        cancel : function () {
+                console.log("cancel : ", this);
+            },
+    });
+
+/*
+// old elements, maybe useful later!?
+        $( "#slider" ).slider({
+        //range: "max",
+        // orientation: "vertical",
+        	min: 1,
+        	max: 240,
+        	value: 1,
+            change: function(event, ui) {
+                  socket.send("/slider " + ui.value);
+                  $( "#amount" ).val( ui.value );
+                  console.log(ui.value);
+            }
+        });
+            
+        $('#start').button();
+        $('#start').on('change', function(e) {
+            //console.log("BUTTON CHANGE");
+            if ($(this).prop('checked')) {
+                socket.send("/start 1");
+                console.log("start on");
+            } 
+            else {
+            	socket.send("/start 0");
+                console.log("start off");
+                }
+        });
+
+        $('#rewind').button();
+        $('#rewind').on('change', function(e) {
+            if ($(this).prop('checked')) {
+                socket.send("/rewind 1");
+                console.log("rewind on");
+            } 
+            else {
+                socket.send("/rewind 0");
+                console.log("rewind off");
+            }
+        });
+
+        $('#loop').button();
+        $('#loop').on('change', function(e) {
+            if ($(this).prop('checked')) {
+                socket.send("/loop 1");
+                console.log("loop on");
+            } 
+            else {
+                socket.send("/loop 0");
+                console.log("rewind off");
+            }
+        });
+*/
+	});
+</script>
+</body>
+</html>
