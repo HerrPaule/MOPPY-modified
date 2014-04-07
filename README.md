@@ -4,6 +4,20 @@ MOPPY-modified
 based on SammyIAm's Moppy code. Use Floppy with usbmidi (Teensy), Pure Data or Max/MSP.
 SammyIAm source: https://github.com/SammyIAm/Moppy
 
+==============
+
+UPDATE 7.4.2014
+
+My MOPPY Frame is nearly ready. I wrote a detailed description, how to setup a Raspberry Pi in headless mode, which runs a webserver and Pure Data. Pure Data and the HTML page are communicating over websocket. The needed files are at:
+- Raspberry Pi Folder
+- Teensy Folder
+
+The description can be found at: http://irieelectronics.de/edu/floppy-frame
+
+Here is a short vid of my work:
+http://youtu.be/oiNMB_hdTfs
+
+==============
 
 Teensy (2.0++) usbmidi
 ==============
